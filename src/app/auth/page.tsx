@@ -11,8 +11,9 @@ import { Label } from "@/components/ui/label"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
 import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
-export default function AuthPage() {
+function AuthPageContent() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
@@ -238,5 +239,17 @@ export default function AuthPage() {
         </p>
       </motion.div>
     </div>
+  )
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Sparkles className="w-8 h-8 text-primary animate-pulse" />
+      </div>
+    }>
+      <AuthPageContent />
+    </Suspense>
   )
 }
