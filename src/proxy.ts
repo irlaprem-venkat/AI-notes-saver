@@ -1,0 +1,62 @@
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export async function proxy(req: NextRequest) {
+  let res = NextResponse.next({
+    request: { headers: req.headers },
+  })
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseKey) {
+    return res
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return req.cookies.getAll()
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value))
+        res = NextResponse.next({ request: { headers: req.headers } })
+        cookiesToSet.forEach(({ name, value, options }) =>
+          res.cookies.set(name, value, options)
+        )
+      },
+    },
+  })
+
+  // Refresh session if expired — required for Server Components
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Protect dashboard routes — redirect unauthenticated users to login
+  if (req.nextUrl.pathname.startsWith('/dashboard')) {
+    if (!user) {
+      return NextResponse.redirect(new URL('/auth', req.url))
+    }
+  }
+
+  // Redirect already-authenticated users away from auth pages
+  if (
+    req.nextUrl.pathname.startsWith('/auth') &&
+    !req.nextUrl.pathname.startsWith('/auth/callback')
+  ) {
+    if (user) {
+      return NextResponse.redirect(new URL('/dashboard', req.url))
+    }
+  }
+
+  return res
+}
+
+export const config = {
+  matcher: [
+    '/dashboard/:path*',
+    '/auth',
+    '/auth/login',
+    '/auth/signup',
+  ],
+}
