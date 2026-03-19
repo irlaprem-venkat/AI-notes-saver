@@ -3,6 +3,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
+import { NoteSchema } from '@/lib/validations'
 
 async function getSupabase() {
   const cookieStore = await cookies()
@@ -34,6 +35,11 @@ export async function createNote(note: {
   folder_id?: string
   type: string
 }) {
+  const validatedFields = NoteSchema.safeParse(note)
+  if (!validatedFields.success) {
+    throw new Error(validatedFields.error.issues[0].message)
+  }
+
   const supabase = await getSupabase()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -42,7 +48,7 @@ export async function createNote(note: {
   const { data, error } = await supabase
     .from('notes')
     .insert({
-      ...note,
+      ...validatedFields.data,
       user_id: user.id,
       updated_at: new Date().toISOString()
     })
@@ -56,6 +62,11 @@ export async function createNote(note: {
 }
 
 export async function updateNoteAction(id: string, updates: any) {
+  const validatedFields = NoteSchema.partial().safeParse(updates)
+  if (!validatedFields.success) {
+    throw new Error(validatedFields.error.issues[0].message)
+  }
+
   const supabase = await getSupabase()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -64,7 +75,7 @@ export async function updateNoteAction(id: string, updates: any) {
   const { data, error } = await supabase
     .from('notes')
     .update({
-      ...updates,
+      ...validatedFields.data,
       updated_at: new Date().toISOString()
     })
     .eq('id', id)
@@ -110,3 +121,4 @@ export async function getNotes() {
   if (error) throw error
   return data
 }
+

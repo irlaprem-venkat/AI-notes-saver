@@ -156,8 +156,48 @@ export default function Home() {
           </motion.div>
         </section>
 
+        {/* Security Protocol Section */}
+        <section className="max-w-5xl mx-auto mt-64 mb-32 px-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="p-16 rounded-[4rem] glass-premium border-white/10 relative overflow-hidden"
+          >
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-gradient-to-r from-transparent via-nebula-cyan to-transparent opacity-50" />
+            <div className="absolute -top-24 -left-24 w-64 h-64 bg-nebula-cyan/5 blur-[100px] rounded-full" />
+            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-nebula-purple/5 blur-[100px] rounded-full" />
+            
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-white/5 border border-white/10 mb-10 glass shadow-2xl">
+              <Shield className="w-10 h-10 text-nebula-cyan drop-shadow-[0_0_15px_var(--nebula-cyan)]" />
+            </div>
+            
+            <h2 className="text-4xl md:text-6xl font-black uppercase italic mb-8 tracking-tighter">
+              World Strongest <span className="text-nebula">Security</span>
+            </h2>
+            
+            <div className="grid md:grid-cols-3 gap-12 text-left">
+              <div className="space-y-4">
+                <div className="text-nebula-cyan font-black text-[10px] uppercase tracking-widest">Protocol 01</div>
+                <h4 className="text-xl font-bold text-white italic transition-all group-hover:text-nebula-cyan">Neural Encryption</h4>
+                <p className="text-white/30 text-xs leading-relaxed font-medium">Your data is fragmented and encrypted with RSA-4096 before hitting the neural core.</p>
+              </div>
+              <div className="space-y-4">
+                <div className="text-nebula-purple font-black text-[10px] uppercase tracking-widest">Protocol 02</div>
+                <h4 className="text-xl font-bold text-white italic">Biometric Auth</h4>
+                <p className="text-white/30 text-xs leading-relaxed font-medium">Multi-factor authentication via GitHub, Google, and Magic Neural Keys.</p>
+              </div>
+              <div className="space-y-4">
+                <div className="text-nebula-blue font-black text-[10px] uppercase tracking-widest">Protocol 03</div>
+                <h4 className="text-xl font-bold text-white italic">Zero Knowledge</h4>
+                <p className="text-white/30 text-xs leading-relaxed font-medium">Even we cannot see your thoughts. Privacy is not a feature, it's the core.</p>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
         {/* Feature Sectors */}
-        <section id="features" className="max-w-7xl mx-auto mt-64 px-10">
+        <section id="features" className="max-w-7xl mx-auto px-10">
           <div className="text-center mb-32">
              <h2 className="text-5xl md:text-7xl font-black uppercase italic mb-6">Neural Senses</h2>
              <p className="text-white/30 font-bold uppercase tracking-[0.3em] text-[10px]">Advanced Human-App Interface</p>
@@ -170,9 +210,9 @@ export default function Home() {
               color="cyan"
             />
             <FeatureSector
-              icon={<ImageIcon className="w-8 h-8 text-nebula-purple" />}
-              title="Optic Scanner"
-              description="Upload images. Extract neural patterns and text from every edge."
+              icon={<Shield className="w-8 h-8 text-nebula-purple" />}
+              title="Fortress Storage"
+              description="World-class security for your digital brain. Protected by Lumina Guard."
               color="purple"
             />
             <FeatureSector

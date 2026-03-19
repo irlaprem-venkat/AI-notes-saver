@@ -49,14 +49,35 @@ export async function proxy(req: NextRequest) {
     }
   }
 
+  // SECURITY HEADERS
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' *.supabase.co;
+    style-src 'self' 'unsafe-inline' fonts.googleapis.com;
+    img-src 'self' blob: data: *.supabase.co github.com lh3.googleusercontent.com grainy-gradients.vercel.app;
+    font-src 'self' fonts.gstatic.com;
+    connect-src 'self' *.supabase.co;
+    frame-src 'none';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
+  `.replace(/\s{2,}/g, ' ').trim()
+
+  res.headers.set('Content-Security-Policy', cspHeader)
+  res.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
+  res.headers.set('X-Content-Type-Options', 'nosniff')
+  res.headers.set('X-Frame-Options', 'DENY')
+  res.headers.set('X-XSS-Protection', '1; mode=block')
+  res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  res.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+
   return res
 }
 
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/auth',
-    '/auth/login',
-    '/auth/signup',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

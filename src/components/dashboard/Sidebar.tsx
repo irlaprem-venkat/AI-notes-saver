@@ -16,7 +16,8 @@ import {
   Zap,
   Activity,
   Cpu,
-  LogOut
+  LogOut,
+  Shield
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -174,6 +175,12 @@ export function Sidebar() {
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 overflow-hidden relative">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-nebula-cyan/10 border border-nebula-cyan/20">
+                <Shield className="w-2.5 h-2.5 text-nebula-cyan" />
+                <span className="text-[7px] font-black uppercase tracking-widest text-nebula-cyan">Protocols Active</span>
+              </div>
+            </div>
             <div className="text-sm font-black truncate text-white uppercase italic tracking-tighter">
               {user?.user_metadata?.full_name || user?.email?.split('@')[0] || "Navigator Alpha"}
             </div>
