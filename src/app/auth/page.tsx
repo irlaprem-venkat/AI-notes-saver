@@ -77,6 +77,16 @@ function AuthPageContent() {
     if (error) toast.error(error.message)
   }
 
+  const handleGithubLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+    if (error) toast.error(error.message)
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-background">
       {/* Background Glows */}
@@ -172,7 +182,7 @@ function AuthPageContent() {
                   <Button variant="outline" className="glass border-white/10 hover:bg-white/5 transition-colors" onClick={handleGoogleLogin}>
                     <Chrome className="mr-2 h-4 w-4" /> Google
                   </Button>
-                  <Button variant="outline" className="glass border-white/10 hover:bg-white/5 transition-colors">
+                  <Button variant="outline" className="glass border-white/10 hover:bg-white/5 transition-colors" onClick={handleGithubLogin}>
                     <Github className="mr-2 h-4 w-4" /> Github
                   </Button>
                 </div>

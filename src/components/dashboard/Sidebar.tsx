@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { 
   FileText, 
@@ -15,13 +15,17 @@ import {
   Sparkles,
   Zap,
   Activity,
-  Cpu
+  Cpu,
+  LogOut
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useNoteStore } from "@/lib/store"
+import { supabase } from "@/lib/supabase"
+import { useRouter } from "next/navigation"
+import { User } from "@supabase/supabase-js"
 
 const navItems = [
   { icon: Activity, label: "Stream", count: 12 },
@@ -31,6 +35,8 @@ const navItems = [
 ]
 
 export function Sidebar() {
+  const [user, setUser] = useState<User | null>(null)
+  const router = useRouter()
   const { 
     folders, 
     activeFolderId, 
@@ -38,6 +44,26 @@ export function Sidebar() {
     activeTag, 
     setActiveTag 
   } = useNoteStore()
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+    }
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push("/auth")
+    router.refresh()
+  }
 
   return (
     <div className="flex flex-col h-full glass-premium border-r border-white/5 w-80 z-40 bg-black/40 backdrop-blur-[60px]">
@@ -138,22 +164,39 @@ export function Sidebar() {
       </ScrollArea>
 
       {/* Sidebar Footer */}
-      <div className="p-6 mt-auto">
+      <div className="p-6 mt-auto space-y-4">
         <div className="p-6 rounded-[2.5rem] bg-white/[0.03] border border-white/5 flex items-center gap-5 hover:bg-white/[0.08] transition-all duration-500 cursor-pointer group hover:border-white/10 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-nebula-purple/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <Avatar className="h-12 w-12 border-2 border-white/5 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-6">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback className="bg-nebula-purple text-white font-black">AI</AvatarFallback>
+            <AvatarImage src={user?.user_metadata?.avatar_url || "https://github.com/shadcn.png"} />
+            <AvatarFallback className="bg-nebula-purple text-white font-black">
+              {user?.email?.charAt(0).toUpperCase() || "AI"}
+            </AvatarFallback>
           </Avatar>
           <div className="flex-1 overflow-hidden relative">
-            <div className="text-sm font-black truncate text-white uppercase italic tracking-tighter">Navigator Alpha</div>
+            <div className="text-sm font-black truncate text-white uppercase italic tracking-tighter">
+              {user?.user_metadata?.full_name || user?.email?.split('@')[0] || "Navigator Alpha"}
+            </div>
             <div className="flex items-center gap-2">
               <Zap className="w-2 h-2 text-nebula-cyan animate-pulse" />
-              <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Sovereign Tier</div>
+              <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] truncate">
+                {user?.email || "Sovereign Tier"}
+              </div>
             </div>
           </div>
           <Settings className="w-5 h-5 text-white/10 group-hover:text-white/40 group-hover:rotate-90 transition-all duration-700" />
         </div>
+
+        {user && (
+          <Button 
+            onClick={handleLogout}
+            variant="ghost" 
+            className="w-full justify-start gap-5 h-14 px-6 rounded-[2rem] text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-all duration-500 group"
+          >
+            <LogOut className="w-5 h-5 opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+            <span className="text-[11px] font-black uppercase tracking-[0.2em] italic">De-Archive Session</span>
+          </Button>
+        )}
       </div>
     </div>
   )
