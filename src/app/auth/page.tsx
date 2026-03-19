@@ -68,23 +68,31 @@ function AuthPageContent() {
   }
 
   const handleGoogleLogin = async () => {
+    console.log("Initiating Google Login")
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
-    if (error) toast.error(error.message)
+    if (error) {
+      console.error("Google Login Error:", error)
+      toast.error(error.message)
+    }
   }
 
   const handleGithubLogin = async () => {
+    console.log("Initiating GitHub Login")
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
-    if (error) toast.error(error.message)
+    if (error) {
+      console.error("GitHub Login Error:", error)
+      toast.error(error.message)
+    }
   }
 
   return (
@@ -179,10 +187,10 @@ function AuthPageContent() {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 w-full">
-                  <Button variant="outline" className="glass border-white/10 hover:bg-white/5 transition-colors" onClick={handleGoogleLogin}>
+                  <Button type="button" variant="outline" className="glass border-white/10 hover:bg-white/5 transition-colors" onClick={handleGoogleLogin}>
                     <Chrome className="mr-2 h-4 w-4" /> Google
                   </Button>
-                  <Button variant="outline" className="glass border-white/10 hover:bg-white/5 transition-colors" onClick={handleGithubLogin}>
+                  <Button type="button" variant="outline" className="glass border-white/10 hover:bg-white/5 transition-colors" onClick={handleGithubLogin}>
                     <Github className="mr-2 h-4 w-4" /> Github
                   </Button>
                 </div>
@@ -240,6 +248,24 @@ function AuthPageContent() {
                   </Button>
                 </CardContent>
               </form>
+              <CardFooter className="flex flex-col space-y-4 border-t border-white/5 pt-6 bg-white/3">
+                <div className="relative w-full">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-white/5" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-transparent px-2 text-muted-foreground">Or continue with</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 w-full">
+                  <Button type="button" variant="outline" className="glass border-white/10 hover:bg-white/5 transition-colors" onClick={handleGoogleLogin}>
+                    <Chrome className="mr-2 h-4 w-4" /> Google
+                  </Button>
+                  <Button type="button" variant="outline" className="glass border-white/10 hover:bg-white/5 transition-colors" onClick={handleGithubLogin}>
+                    <Github className="mr-2 h-4 w-4" /> Github
+                  </Button>
+                </div>
+              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>
