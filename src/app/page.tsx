@@ -6,36 +6,7 @@ import { ArrowRight, Brain, Sparkles, Mic, Image as ImageIcon, Zap, Shield, Glob
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-
-const NebulaBackground = () => (
-  <div className="fixed inset-0 -z-20 bg-background overflow-hidden pointer-events-none">
-    {/* Animated Mesh Gradients */}
-    <div className="absolute inset-0 mesh-gradient opacity-30" />
-    
-    {/* Floating Orbs */}
-    <motion.div
-      animate={{
-        x: [0, 200, 0],
-        y: [0, 100, 0],
-        scale: [1, 1.5, 1],
-      }}
-      transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute top-[-20%] left-[-10%] w-full h-full bg-nebula-purple/20 blur-[180px] rounded-full"
-    />
-    <motion.div
-      animate={{
-        x: [0, -150, 0],
-        y: [0, 200, 0],
-        scale: [1.2, 0.8, 1.2],
-      }}
-      transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-      className="absolute bottom-[-10%] right-[-10%] w-[80%] h-[80%] bg-nebula-blue/20 blur-[150px] rounded-full"
-    />
-    
-    {/* Noise Texture */}
-    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
-  </div>
-)
+import { GlassBubbleUniverse } from "@/components/3d/GlassBubbleUniverse";
 
 const Navbar = () => (
   <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between px-8 py-4 glass-premium mx-auto w-[90%] max-w-7xl rounded-full border-white/5 shadow-2xl">
@@ -66,7 +37,7 @@ const Navbar = () => (
 export default function Home() {
   return (
     <div className="relative min-h-screen text-foreground selection:bg-nebula-purple/30 selection:text-white">
-      <NebulaBackground />
+      {/* 3D background is now in root layout */}
       <Navbar />
 
       <main className="relative pt-48 pb-32 px-6">

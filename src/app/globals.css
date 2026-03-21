@@ -209,7 +209,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground selection:bg-primary/20;
+    @apply bg-transparent text-foreground selection:bg-primary/20;
     font-feature-settings: "ss01", "ss02", "cv03", "cv04";
   }
   h1, h2, h3 {

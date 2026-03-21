@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { useNoteStore, type Note } from "@/lib/store"
 import { cn } from "@/lib/utils"
 import { createNote } from "@/app/actions/notes"
+import { smartSearchExpansion } from "@/app/actions/ai"
 import { toast } from "sonner"
 
 export function NoteList() {
@@ -43,9 +44,13 @@ export function NoteList() {
   useEffect(() => {
     if (searchQuery.length > 3) {
       const timer = setTimeout(async () => {
-        const { smartSearchExpansion } = await import('@/lib/embeddings')
-        const keywords = await smartSearchExpansion(searchQuery)
-        setExpandedKeywords(keywords)
+        try {
+          const keywords = await smartSearchExpansion(searchQuery)
+          setExpandedKeywords(keywords || [])
+        } catch (error) {
+          console.error("Failed to expand search keywords:", error)
+          setExpandedKeywords([])
+        }
       }, 500)
       return () => clearTimeout(timer)
     } else {

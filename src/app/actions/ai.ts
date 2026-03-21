@@ -100,3 +100,35 @@ export async function transformNoteAction(content: string, format: TransformForm
 
   return res.choices[0].message.content || 'Transformation failed.'
 }
+
+// ─── Search Expansion ─────────────────────────────────────────────────────────
+
+export async function smartSearchExpansion(query: string): Promise<string[]> {
+  const prompt = `
+    Give me 5-8 related keywords or synonymous concepts for the search query: "${query}".
+    Include both technical terms and general concepts.
+    Format the response as a simple comma-separated list.
+  `
+
+  try {
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: "You are a search optimization assistant. Return only keywords."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      model: "llama-3.1-8b-instant"
+    })
+
+    const response = chatCompletion.choices[0].message.content || ""
+    return response.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+  } catch (error) {
+    console.error("Smart Search Expansion failed:", error)
+    return [] // Return empty array on failure instead of crashing
+  }
+}

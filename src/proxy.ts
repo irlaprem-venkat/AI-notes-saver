@@ -54,9 +54,9 @@ export async function proxy(req: NextRequest) {
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline' *.supabase.co;
     style-src 'self' 'unsafe-inline' fonts.googleapis.com;
-    img-src 'self' blob: data: *.supabase.co github.com lh3.googleusercontent.com grainy-gradients.vercel.app;
+    img-src 'self' blob: data: *.supabase.co github.com avatars.githubusercontent.com lh3.googleusercontent.com grainy-gradients.vercel.app raw.githack.com raw.githubusercontent.com;
     font-src 'self' fonts.gstatic.com;
-    connect-src 'self' *.supabase.co;
+    connect-src 'self' *.supabase.co wss://*.supabase.co raw.githack.com raw.githubusercontent.com dl.polyhaven.org;
     frame-src 'none';
     object-src 'none';
     base-uri 'self';

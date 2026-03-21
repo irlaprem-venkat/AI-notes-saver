@@ -10,15 +10,13 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-screen overflow-hidden bg-background/30 backdrop-blur-sm">
       <DashboardSync />
       <Sidebar />
       <NoteList />
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         <CommandPalette />
-        {/* Animated Background for Dashboard */}
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-background to-background" />
-        <div className="absolute inset-0 -z-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none" />
+        {/* Animated Background for Dashboard is now handled at root level */}
         {children}
       </main>
     </div>
